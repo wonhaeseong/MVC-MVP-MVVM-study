@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MVC-MVP-MVVM-study</string>
+    <string name="basket">basket</string>
 </resources>
