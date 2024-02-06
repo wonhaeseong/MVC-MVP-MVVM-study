@@ -2,14 +2,14 @@ package com.wonhaeseong.mvc_mvp_mvvm_study
 
 class Basket {
     private val _items: MutableMap<String, Int> = mutableMapOf()
+    val items: Map<String, Int>
+        get() = _items
 
-    var uniqueItemCount: Int = 0
+    val numberOfItemTypes: Int
         get() = _items.size
-        private set
 
-    var totalItemCount: Int = 0
+    val numberOfItems: Int
         get() = _items.values.sumOf { it }
-        private set
 
     fun addItem(item: String) {
         if (_items.containsKey(item)) {
@@ -26,5 +26,9 @@ class Basket {
                 _items.remove(item)
             }
         }
+    }
+
+    fun removeAllItems() {
+        _items.clear()
     }
 }
