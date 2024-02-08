@@ -10,9 +10,9 @@ class MainActivity : AppCompatActivity(), View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bottomSheet = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+        val basketView = layoutInflater.inflate(R.layout.basket, null)
         val basket = BottomSheetDialog(this)
-        basket.setContentView(bottomSheet)
+        basket.setContentView(basketView)
         basket.behavior.skipCollapsed = true
 
         val basketBtn = findViewById<FloatingActionButton>(R.id.basket_btn)
