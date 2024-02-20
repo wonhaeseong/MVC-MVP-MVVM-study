@@ -9,8 +9,8 @@ class BasketUnitTest {
     fun `whenAddSameItemToBasket_shouldNotIncreaseNumberOfItemTypes`() {
         val basket = Basket()
 
-        basket.addItem("banana")
-        basket.addItem("banana")
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("banana"))
 
         assertEquals(1, basket.numberOfItemTypes)
     }
@@ -19,42 +19,32 @@ class BasketUnitTest {
     fun `whenAddItemsToBasket_shouldIncreaseNumberOfItems`() {
         val basket = Basket()
 
-        basket.addItem("banana")
-        basket.addItem("banana")
-        basket.addItem("apple")
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("apple"))
 
         assertEquals(3, basket.numberOfItems)
     }
 
     @Test
-    fun `whenRemoveItemFromBasket_shouldDecreaseNumberOfItems`() {
+    fun `whenRemoveItemFromBasket_shouldNotContainItem`() {
         val basket = Basket()
 
-        basket.addItem("banana")
-        basket.addItem("banana")
-        basket.removeItem("banana")
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("banana"))
+        basket.removeItem(BasketItem("banana"))
 
-        assertEquals(1, basket.numberOfItems)
+        assertNull(basket.items.find { it.name == "banana" })
     }
 
     @Test
-    fun `whenRemoveItemFromBasket_noMoreItem_shouldNotContainItem`() {
+    fun `whenRemoveAllItemsFromBasket_shouldNotContainItem`() {
         val basket = Basket()
 
-        basket.addItem("banana")
-        basket.removeItem("banana")
-
-        assertFalse(basket.items.contains("banana"))
-    }
-
-    @Test
-    fun `whenRemoveAllItemsFromBasket_shouldNotContainItem`(){
-        val basket = Basket()
-
-        basket.addItem("banana")
-        basket.addItem("banana")
-        basket.addItem("apple")
-        basket.addItem("mango")
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("banana"))
+        basket.addItem(Item("apple"))
+        basket.addItem(Item("mango"))
         basket.removeAllItems()
 
         assertTrue(basket.items.isEmpty())

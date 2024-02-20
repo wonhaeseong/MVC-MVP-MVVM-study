@@ -1,31 +1,22 @@
 package com.wonhaeseong.mvc_mvp_mvvm_study
 
 class Basket {
-    private val _items: MutableMap<String, Int> = mutableMapOf()
-    val items: Map<String, Int>
+    private var _items: MutableList<BasketItem> = mutableListOf()
+    val items: List<BasketItem>
         get() = _items
 
     val numberOfItemTypes: Int
         get() = _items.size
 
     val numberOfItems: Int
-        get() = _items.values.sumOf { it }
+        get() = _items.sumOf { it.number }
 
-    fun addItem(item: String) {
-        if (_items.containsKey(item)) {
-            _items[item] = _items[item]!! + 1
-        } else {
-            _items[item] = 1
-        }
+    fun addItem(item: Item) {
+        _items.find { it.name == item.name }?.add() ?: _items.add(BasketItem(item.name))
     }
 
-    fun removeItem(item: String) {
-        if (_items.containsKey(item)) {
-            _items[item] = _items[item]!! - 1
-            if (_items[item] == 0) {
-                _items.remove(item)
-            }
-        }
+    fun removeItem(item: BasketItem) {
+        _items.remove(_items.find { it.name == item.name })
     }
 
     fun removeAllItems() {
