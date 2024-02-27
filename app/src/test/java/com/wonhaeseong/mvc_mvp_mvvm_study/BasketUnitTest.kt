@@ -1,50 +1,50 @@
 package com.wonhaeseong.mvc_mvp_mvvm_study
 
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.BasketItem
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Item
 import org.junit.Assert.*
 import org.junit.Test
 
 class BasketUnitTest {
-
     @Test
-    fun `whenAddSameItemToBasket_shouldNotIncreaseNumberOfItemTypes`() {
+    fun `whenAddBasketItem_shouldIncreaseNumberOfItems`() {
         val basket = Basket()
+        val basketItem = BasketItem("banana")
 
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("banana"))
+        basket.addItem(basketItem)
 
-        assertEquals(1, basket.numberOfItemTypes)
+        assertEquals(1, basket.numberOfItems)
     }
 
     @Test
-    fun `whenAddItemsToBasket_shouldIncreaseNumberOfItems`() {
+    fun `whenUpdateBasketItem_shouldIncreaseNumber`() {
         val basket = Basket()
+        val basketItem = BasketItem("banana")
 
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("apple"))
+        basket.addItem(basketItem)
+        basket.updateItem(0)
 
-        assertEquals(3, basket.numberOfItems)
+        assertEquals(2, basketItem.number)
     }
 
     @Test
-    fun `whenRemoveItemFromBasket_shouldNotContainItem`() {
+    fun `whenRemoveBasetItem_shouldNotContainBasetItem`() {
         val basket = Basket()
+        val basketItem = BasketItem("banana")
+        basket.addItem(basketItem)
+        basket.removeItem(0)
 
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("banana"))
-        basket.removeItem(BasketItem("banana"))
-
-        assertNull(basket.items.find { it.name == "banana" })
+        assertEquals(-1, basket.items.indexOf(basketItem))
     }
 
     @Test
     fun `whenRemoveAllItemsFromBasket_shouldNotContainItem`() {
         val basket = Basket()
 
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("banana"))
-        basket.addItem(Item("apple"))
-        basket.addItem(Item("mango"))
+        basket.addItem(BasketItem("banana"))
+        basket.addItem(BasketItem("apple"))
+        basket.addItem(BasketItem("mango"))
         basket.removeAllItems()
 
         assertTrue(basket.items.isEmpty())
