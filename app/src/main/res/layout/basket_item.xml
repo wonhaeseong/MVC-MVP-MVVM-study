@@ -2,45 +2,46 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_item"
+    android:id="@+id/basket_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/main_item_img"
+        android:id="@+id/basket_item_img"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@drawable/banana" />
 
     <TextView
-        android:id="@+id/main_item_name"
+        android:id="@+id/basket_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/main_item_img"
+        app:layout_constraintStart_toEndOf="@+id/basket_item_img"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="banana" />
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/basket_item_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"
         android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/trash_btn"
+        app:layout_constraintEnd_toStartOf="@+id/delete_btn"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="3" />
 
 
     <ImageButton
-        android:id="@+id/trash_btn"
+        android:id="@+id/delete_btn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:contentDescription="@string/remove"

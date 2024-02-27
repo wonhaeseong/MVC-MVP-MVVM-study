@@ -3,4 +3,6 @@
     <string name="basket">basket</string>
     <string name="add">add</string>
     <string name="remove">remove</string>
+    <string name="buy">buy</string>
+    <string name="empty">empty</string>
 </resources>
