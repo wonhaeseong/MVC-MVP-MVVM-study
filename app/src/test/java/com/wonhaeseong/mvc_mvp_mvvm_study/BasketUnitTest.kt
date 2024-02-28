@@ -29,6 +29,16 @@ class BasketUnitTest {
     }
 
     @Test
+    fun `whenUpdateBasketItem_shouldIncreaseNumberOfItems`() {
+        val basket = Basket()
+        val basketItem = BasketItem("banana")
+
+        basket.addItem(basketItem)
+        basket.updateItem(0)
+
+        assertEquals(2, basket.numberOfItems)
+    }
+    @Test
     fun `whenRemoveBasetItem_shouldNotContainBasetItem`() {
         val basket = Basket()
         val basketItem = BasketItem("banana")

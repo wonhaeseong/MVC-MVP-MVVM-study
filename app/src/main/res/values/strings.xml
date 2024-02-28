@@ -5,4 +5,5 @@
     <string name="remove">remove</string>
     <string name="buy">buy</string>
     <string name="empty">empty</string>
+    <string name="total">total:</string>
 </resources>

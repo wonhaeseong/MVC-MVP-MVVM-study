@@ -2,6 +2,7 @@ package com.wonhaeseong.mvc_mvp_mvvm_study.view
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity(), View {
     private lateinit var controller: Controller
     private lateinit var basketAdapter: BasketAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var numberOfItemsView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity(), View {
         }
         val basketItemsView = basketView.findViewById<RecyclerView>(R.id.basket_items)
         basketItemsView.adapter = basketAdapter
+
+        numberOfItemsView = basketView.findViewById(R.id.number_of_items)
     }
 
     private fun initDisplayView() {
@@ -57,13 +61,16 @@ class MainActivity : AppCompatActivity(), View {
 
     override fun onBasketItemAdded(index: Int) {
         basketAdapter.notifyItemInserted(index)
+        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 
     override fun onBasketItemDeleted(index: Int) {
         basketAdapter.notifyItemRemoved(index)
+        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 
     override fun onBasketItemUpdated(index: Int) {
         basketAdapter.notifyItemChanged(index)
+        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 }
