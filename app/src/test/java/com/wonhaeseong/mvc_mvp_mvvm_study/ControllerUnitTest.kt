@@ -70,4 +70,26 @@ class ControllerUnitTest {
 
         verify(view, times(1)).onBasketItemAdded(0)
     }
+
+    @Test
+    fun `whenBasketItemRemoveBtnClicked_shouldRemoveItem`(){
+        val item = Item("banana")
+        val basketItem = item.mapToBasketItem()
+        whenever(model.items).thenReturn(listOf(basketItem))
+
+        controller.onBasketItemRemoveBtnClicked(basketItem)
+
+        verify(model, times(1)).removeItem(0)
+    }
+    
+    @Test
+    fun `whenBasketItemRemoveBtnClicked_shouldNotifyViewItemDeleted`(){
+        val item = Item("banana")
+        val basketItem = item.mapToBasketItem()
+        whenever(model.items).thenReturn(listOf(basketItem))
+
+        controller.onBasketItemRemoveBtnClicked(basketItem)
+
+        verify(view, times(1)).onBasketItemDeleted(0)
+    }
 }
