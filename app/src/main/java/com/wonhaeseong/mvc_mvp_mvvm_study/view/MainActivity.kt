@@ -2,6 +2,8 @@ package com.wonhaeseong.mvc_mvp_mvvm_study.view
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity(), View {
     private lateinit var basketAdapter: BasketAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var numberOfItemsView: TextView
+    private lateinit var buyBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,10 @@ class MainActivity : AppCompatActivity(), View {
         basketItemsView.adapter = basketAdapter
 
         numberOfItemsView = basketView.findViewById(R.id.number_of_items)
+        buyBtn = basketView.findViewById(R.id.buy_btn)
+        buyBtn.setOnClickListener {
+            controller.onBuyBtnClicked()
+        }
     }
 
     private fun initDisplayView() {
@@ -71,6 +78,11 @@ class MainActivity : AppCompatActivity(), View {
 
     override fun onBasketItemUpdated(index: Int) {
         basketAdapter.notifyItemChanged(index)
+        numberOfItemsView.text = basket.numberOfItems.toString()
+    }
+
+    override fun onBasketCleared(itemCount: Int) {
+        basketAdapter.notifyItemRangeRemoved(0, itemCount)
         numberOfItemsView.text = basket.numberOfItems.toString()
     }
 }

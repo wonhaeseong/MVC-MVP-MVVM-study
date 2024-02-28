@@ -29,4 +29,10 @@ class Controller(
             view.onBasketItemDeleted(itemIndex)
         }
     }
+
+    fun onBuyBtnClicked(){
+        val itemCount = model.items.size
+        model.removeAllItems()
+        view.onBasketCleared(itemCount)
+    }
 }

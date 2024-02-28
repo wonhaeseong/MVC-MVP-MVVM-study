@@ -81,7 +81,7 @@ class ControllerUnitTest {
 
         verify(model, times(1)).removeItem(0)
     }
-    
+
     @Test
     fun `whenBasketItemRemoveBtnClicked_shouldNotifyViewItemDeleted`(){
         val item = Item("banana")
@@ -91,5 +91,24 @@ class ControllerUnitTest {
         controller.onBasketItemRemoveBtnClicked(basketItem)
 
         verify(view, times(1)).onBasketItemDeleted(0)
+    }
+    @Test
+    fun `whenBuyBtnClicked_shouldRemoveItemsAll`(){
+        val basketItem = BasketItem("banana")
+        whenever(model.items).thenReturn(listOf(basketItem))
+
+        controller.onBuyBtnClicked()
+
+        verify(model, times(1)).removeAllItems()
+    }
+    @Test
+    fun `whenBuyBtnClicked_shouldNotifyViewBasketCleared`(){
+        val basketItem1 = BasketItem("banana")
+        val basketItem2 = BasketItem("apple")
+        whenever(model.items).thenReturn(listOf(basketItem1,basketItem2))
+
+        controller.onBuyBtnClicked()
+
+        verify(view, times(1)).onBasketCleared(2)
     }
 }
