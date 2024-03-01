@@ -2,7 +2,6 @@ package com.wonhaeseong.mvc_mvp_mvvm_study
 
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.BasketItem
-import com.wonhaeseong.mvc_mvp_mvvm_study.model.Item
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -23,7 +22,7 @@ class BasketUnitTest {
         val basketItem = BasketItem("banana")
 
         basket.addItem(basketItem)
-        basket.updateItem(0)
+        basket.incrementItemQuantity(0)
 
         assertEquals(2, basketItem.number)
     }
@@ -34,7 +33,7 @@ class BasketUnitTest {
         val basketItem = BasketItem("banana")
 
         basket.addItem(basketItem)
-        basket.updateItem(0)
+        basket.incrementItemQuantity(0)
 
         assertEquals(2, basket.numberOfItems)
     }

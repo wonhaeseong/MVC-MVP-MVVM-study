@@ -1,23 +1,22 @@
 package com.wonhaeseong.mvc_mvp_mvvm_study.view
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.wonhaeseong.mvc_mvp_mvvm_study.Controller
+import com.wonhaeseong.mvc_mvp_mvvm_study.Presenter
 import com.wonhaeseong.mvc_mvp_mvvm_study.R
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.BasketItem
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Display
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Item
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Repository
 
 class MainActivity : AppCompatActivity(), View {
-    private lateinit var basket: Basket
-    private lateinit var display: Display
-    private lateinit var controller: Controller
+    private lateinit var presenter: Presenter
     private lateinit var basketAdapter: BasketAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var numberOfItemsView: TextView
@@ -26,21 +25,22 @@ class MainActivity : AppCompatActivity(), View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        basket = Basket()
-        display = Display()
-        controller = Controller(this, basket)
-        initBasketView()
-        initBasketBtn()
-        initDisplayView()
+        presenter = Presenter(this, Repository(Display(), Basket()))
     }
 
-    private fun initBasketView() {
+    override fun initView(displayItems: List<Item>, basketItems: List<BasketItem>) {
+        initBasketView(basketItems)
+        initBasketBtn()
+        initDisplayView(displayItems)
+    }
+
+    private fun initBasketView(basketItems: List<BasketItem>) {
         val basketView = layoutInflater.inflate(R.layout.basket, null)
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(basketView)
 
-        basketAdapter = BasketAdapter(basket.items) {
-            controller.onBasketItemRemoveBtnClicked(it)
+        basketAdapter = BasketAdapter(basketItems) {
+            presenter.onBasketItemRemoveBtnClicked(it)
         }
         val basketItemsView = basketView.findViewById<RecyclerView>(R.id.basket_items)
         basketItemsView.adapter = basketAdapter
@@ -48,14 +48,14 @@ class MainActivity : AppCompatActivity(), View {
         numberOfItemsView = basketView.findViewById(R.id.number_of_items)
         buyBtn = basketView.findViewById(R.id.buy_btn)
         buyBtn.setOnClickListener {
-            controller.onBuyBtnClicked()
+            presenter.onBuyBtnClicked()
         }
     }
 
-    private fun initDisplayView() {
+    private fun initDisplayView(items: List<Item>) {
         val displayView = findViewById<RecyclerView>(R.id.display)
-        displayView.adapter = DisplayAdapter(display.items) { item ->
-            controller.onDisplayItemClicked(item)
+        displayView.adapter = DisplayAdapter(items) { item ->
+            presenter.onDisplayItemClicked(item)
         }
     }
 
@@ -66,23 +66,24 @@ class MainActivity : AppCompatActivity(), View {
         }
     }
 
-    override fun onBasketItemAdded(index: Int) {
+
+    override fun updateBasketOnItemAdded(index: Int) {
         basketAdapter.notifyItemInserted(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 
-    override fun onBasketItemDeleted(index: Int) {
+    override fun updateBasketOnItemRemoved(index: Int) {
         basketAdapter.notifyItemRemoved(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 
-    override fun onBasketItemUpdated(index: Int) {
+    override fun updateBasketOnItemQuantityIncrement(index: Int) {
         basketAdapter.notifyItemChanged(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
     }
 
-    override fun onBasketCleared(itemCount: Int) {
+    override fun updateBasketOnBasketCleared(itemCount: Int) {
         basketAdapter.notifyItemRangeRemoved(0, itemCount)
-        numberOfItemsView.text = basket.numberOfItems.toString()
+    }
+
+    override fun updateNumberOfBasketItemsView(numberOfBasketItems: String) {
+        numberOfItemsView.text = numberOfBasketItems
     }
 }
