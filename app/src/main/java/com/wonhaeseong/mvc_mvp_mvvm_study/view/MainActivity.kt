@@ -1,9 +1,7 @@
 package com.wonhaeseong.mvc_mvp_mvvm_study.view
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +11,10 @@ import com.wonhaeseong.mvc_mvp_mvvm_study.Controller
 import com.wonhaeseong.mvc_mvp_mvvm_study.R
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Display
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Repository
 
 class MainActivity : AppCompatActivity(), View {
-    private lateinit var basket: Basket
-    private lateinit var display: Display
+    private lateinit var model: Repository
     private lateinit var controller: Controller
     private lateinit var basketAdapter: BasketAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
@@ -26,9 +24,8 @@ class MainActivity : AppCompatActivity(), View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        basket = Basket()
-        display = Display()
-        controller = Controller(this, basket)
+        model = Repository(Display(),Basket())
+        controller = Controller(this, model)
         initBasketView()
         initBasketBtn()
         initDisplayView()
@@ -39,7 +36,7 @@ class MainActivity : AppCompatActivity(), View {
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(basketView)
 
-        basketAdapter = BasketAdapter(basket.items) {
+        basketAdapter = BasketAdapter(model.basketItems) {
             controller.onBasketItemRemoveBtnClicked(it)
         }
         val basketItemsView = basketView.findViewById<RecyclerView>(R.id.basket_items)
@@ -54,7 +51,7 @@ class MainActivity : AppCompatActivity(), View {
 
     private fun initDisplayView() {
         val displayView = findViewById<RecyclerView>(R.id.display)
-        displayView.adapter = DisplayAdapter(display.items) { item ->
+        displayView.adapter = DisplayAdapter(model.displayItems) { item ->
             controller.onDisplayItemClicked(item)
         }
     }
@@ -68,21 +65,25 @@ class MainActivity : AppCompatActivity(), View {
 
     override fun onBasketItemAdded(index: Int) {
         basketAdapter.notifyItemInserted(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
+        updateNumberOfBasketItemsView()
     }
 
     override fun onBasketItemDeleted(index: Int) {
         basketAdapter.notifyItemRemoved(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
+        updateNumberOfBasketItemsView()
     }
 
     override fun onBasketItemUpdated(index: Int) {
         basketAdapter.notifyItemChanged(index)
-        numberOfItemsView.text = basket.numberOfItems.toString()
+        updateNumberOfBasketItemsView()
     }
 
     override fun onBasketCleared(itemCount: Int) {
         basketAdapter.notifyItemRangeRemoved(0, itemCount)
-        numberOfItemsView.text = basket.numberOfItems.toString()
+        updateNumberOfBasketItemsView()
+    }
+
+    private fun updateNumberOfBasketItemsView(){
+        numberOfItemsView.text = model.numberOfBasketItems.toString()
     }
 }

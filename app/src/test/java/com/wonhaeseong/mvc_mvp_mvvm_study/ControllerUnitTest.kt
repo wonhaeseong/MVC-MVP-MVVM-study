@@ -1,8 +1,8 @@
 package com.wonhaeseong.mvc_mvp_mvvm_study
 
-import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.BasketItem
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Item
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Repository
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.mapToBasketItem
 import com.wonhaeseong.mvc_mvp_mvvm_study.view.View
 import org.junit.Before
@@ -16,7 +16,7 @@ import org.mockito.kotlin.whenever
 class ControllerUnitTest {
 
     private lateinit var controller: Controller
-    private lateinit var model: Basket
+    private lateinit var model: Repository
     private lateinit var view: View
 
     @Before
@@ -29,17 +29,17 @@ class ControllerUnitTest {
     @Test
     fun `whenDisplayItemClicked_itAlreadyExist_shouldUpdateItem`() {
         val item = Item("banana")
-        whenever(model.items).thenReturn(listOf(BasketItem("banana")))
+        whenever(model.basketItems).thenReturn(listOf(BasketItem("banana")))
 
         controller.onDisplayItemClicked(item)
 
-        verify(model,times(1)).updateItem(0)
+        verify(model,times(1)).incrementBasketItemQuantity(0)
     }
 
     @Test
     fun `whenDisplayItemClicked_itAlreadyExist_shouldNotifyViewItemUpdated`() {
         val item = Item("banana")
-        whenever(model.items).thenReturn(listOf(BasketItem("banana")))
+        whenever(model.basketItems).thenReturn(listOf(BasketItem("banana")))
 
         controller.onDisplayItemClicked(item)
 
@@ -49,21 +49,20 @@ class ControllerUnitTest {
     @Test
     fun `whenDisplayItemClicked_itDoseNotExist_shouldAddItem`() {
         val item = Item("banana")
-        val basketItem = item.mapToBasketItem()
-        whenever(model.items).thenReturn(emptyList())
+        whenever(model.basketItems).thenReturn(emptyList())
 
         controller.onDisplayItemClicked(item)
 
-        verify(model, times(1)).addItem(basketItem)
+        verify(model, times(1)).addItemToBasket(item)
     }
 
     @Test
     fun `whenDisplayItemClicked_itDoseNotExist_shouldNotifyViewItemAdded`() {
         val item = Item("banana")
-        val basketItem = item.mapToBasketItem()
-        `when`(model.items).thenReturn(emptyList())
-        `when`(model.addItem(basketItem)).thenAnswer {
-            `when`(model.items).thenReturn(listOf(basketItem))
+        val basketItem = BasketItem("banana")
+        `when`(model.basketItems).thenReturn(emptyList())
+        `when`(model.addItemToBasket(item)).thenAnswer {
+            `when`(model.basketItems).thenReturn(listOf(basketItem))
         }
 
         controller.onDisplayItemClicked(item)
@@ -75,18 +74,18 @@ class ControllerUnitTest {
     fun `whenBasketItemRemoveBtnClicked_shouldRemoveItem`(){
         val item = Item("banana")
         val basketItem = item.mapToBasketItem()
-        whenever(model.items).thenReturn(listOf(basketItem))
+        whenever(model.basketItems).thenReturn(listOf(basketItem))
 
         controller.onBasketItemRemoveBtnClicked(basketItem)
 
-        verify(model, times(1)).removeItem(0)
+        verify(model, times(1)).removeBasketItem(0)
     }
 
     @Test
     fun `whenBasketItemRemoveBtnClicked_shouldNotifyViewItemDeleted`(){
         val item = Item("banana")
         val basketItem = item.mapToBasketItem()
-        whenever(model.items).thenReturn(listOf(basketItem))
+        whenever(model.basketItems).thenReturn(listOf(basketItem))
 
         controller.onBasketItemRemoveBtnClicked(basketItem)
 
@@ -95,17 +94,17 @@ class ControllerUnitTest {
     @Test
     fun `whenBuyBtnClicked_shouldRemoveItemsAll`(){
         val basketItem = BasketItem("banana")
-        whenever(model.items).thenReturn(listOf(basketItem))
+        whenever(model.basketItems).thenReturn(listOf(basketItem))
 
         controller.onBuyBtnClicked()
 
-        verify(model, times(1)).removeAllItems()
+        verify(model, times(1)).clearBasket()
     }
     @Test
     fun `whenBuyBtnClicked_shouldNotifyViewBasketCleared`(){
         val basketItem1 = BasketItem("banana")
         val basketItem2 = BasketItem("apple")
-        whenever(model.items).thenReturn(listOf(basketItem1,basketItem2))
+        whenever(model.basketItems).thenReturn(listOf(basketItem1,basketItem2))
 
         controller.onBuyBtnClicked()
 

@@ -11,7 +11,7 @@ class Basket {
         _items.add(basketItem)
     }
 
-    fun updateItem(index: Int) {
+    fun incrementItemQuantity(index: Int) {
         _items[index].add()
     }
 
