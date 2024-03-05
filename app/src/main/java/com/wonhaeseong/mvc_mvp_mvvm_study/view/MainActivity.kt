@@ -3,32 +3,52 @@ package com.wonhaeseong.mvc_mvp_mvvm_study.view
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.wonhaeseong.mvc_mvp_mvvm_study.Controller
 import com.wonhaeseong.mvc_mvp_mvvm_study.R
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Basket
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.BasketItem
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Display
+import com.wonhaeseong.mvc_mvp_mvvm_study.model.Item
 import com.wonhaeseong.mvc_mvp_mvvm_study.model.Repository
+import com.wonhaeseong.mvc_mvp_mvvm_study.viewmodel.MainViewModel
+import com.wonhaeseong.mvc_mvp_mvvm_study.viewmodel.MainViewModelFactory
 
-class MainActivity : AppCompatActivity(), View {
-    private lateinit var model: Repository
-    private lateinit var controller: Controller
+class MainActivity : AppCompatActivity() {
     private lateinit var basketAdapter: BasketAdapter
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var numberOfItemsView: TextView
     private lateinit var buyBtn: Button
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModelFactory(
+            Repository(
+                Display(),
+                Basket()
+            )
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        model = Repository(Display(),Basket())
-        controller = Controller(this, model)
+
         initBasketView()
         initBasketBtn()
-        initDisplayView()
+        initDisplayView(viewModel.displayItems)
+
+        val basketObserver = Observer<List<BasketItem>> {
+            basketAdapter.setItem(it)
+        }
+        val numberOfBasketItemsObserver = Observer<Int> {
+            numberOfItemsView.text = it.toString()
+        }
+
+        viewModel.basketLiveData.observe(this, basketObserver)
+        viewModel.numberOfItemsLiveData.observe(this, numberOfBasketItemsObserver)
     }
 
     private fun initBasketView() {
@@ -36,8 +56,8 @@ class MainActivity : AppCompatActivity(), View {
         bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(basketView)
 
-        basketAdapter = BasketAdapter(model.basketItems) {
-            controller.onBasketItemRemoveBtnClicked(it)
+        basketAdapter = BasketAdapter{
+            viewModel.removeBasketItem(it)
         }
         val basketItemsView = basketView.findViewById<RecyclerView>(R.id.basket_items)
         basketItemsView.adapter = basketAdapter
@@ -45,14 +65,14 @@ class MainActivity : AppCompatActivity(), View {
         numberOfItemsView = basketView.findViewById(R.id.number_of_items)
         buyBtn = basketView.findViewById(R.id.buy_btn)
         buyBtn.setOnClickListener {
-            controller.onBuyBtnClicked()
+            viewModel.buy()
         }
     }
 
-    private fun initDisplayView() {
+    private fun initDisplayView(items: List<Item>) {
         val displayView = findViewById<RecyclerView>(R.id.display)
-        displayView.adapter = DisplayAdapter(model.displayItems) { item ->
-            controller.onDisplayItemClicked(item)
+        displayView.adapter = DisplayAdapter(items) { item ->
+            viewModel.addItemToBasket(item)
         }
     }
 
@@ -61,29 +81,5 @@ class MainActivity : AppCompatActivity(), View {
         basketBtn.setOnClickListener {
             bottomSheetDialog.show()
         }
-    }
-
-    override fun onBasketItemAdded(index: Int) {
-        basketAdapter.notifyItemInserted(index)
-        updateNumberOfBasketItemsView()
-    }
-
-    override fun onBasketItemDeleted(index: Int) {
-        basketAdapter.notifyItemRemoved(index)
-        updateNumberOfBasketItemsView()
-    }
-
-    override fun onBasketItemUpdated(index: Int) {
-        basketAdapter.notifyItemChanged(index)
-        updateNumberOfBasketItemsView()
-    }
-
-    override fun onBasketCleared(itemCount: Int) {
-        basketAdapter.notifyItemRangeRemoved(0, itemCount)
-        updateNumberOfBasketItemsView()
-    }
-
-    private fun updateNumberOfBasketItemsView(){
-        numberOfItemsView.text = model.numberOfBasketItems.toString()
     }
 }
