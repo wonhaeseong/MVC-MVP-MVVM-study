@@ -1,5 +1,4 @@
 # Android MVC, MVP, MVVM architecture pattern sample
-- - -
 
 a simple market simulator illustrating the use of MVC, MVP, and MVVM architectures, 
 each implemented in its own respective branches.
